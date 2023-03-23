@@ -1,19 +1,20 @@
 import re
 import WorkFunctions
 
+
 class Transaction:
     counts = []
     operations = []
-    transaction_file_name = "/Transaction.py"
+    transaction_file_name = "BankOperations.txt"
 
     def __init__(self):
         transaction_file = open(self.transaction_file_name)
         lines = transaction_file.readlines()
         for line in lines:
-            if re.fullmatch(r'\d.\d.\d \d+ \d+'):
-                self.counts.append(line)
-            elif re.fullmatch(r'\d.\d.\d \d+ \d+ \d+ .*'):
+            if re.fullmatch(r'\d+.\d+.\d+ \d+ \d+ \d+.*', line.rstrip('\n')):
                 self.operations.append(line)
+            elif re.fullmatch(r'\d+.\d+.\d+ \d+ \d+.*', line.rstrip('\n')):
+                self.counts.append(line)
         transaction_file.close()
 
     def add_count(self, date, count, summa):
@@ -31,17 +32,31 @@ class Transaction:
         transaction_file.close()
 
     def get_transaction_per_date(self, date):
-        return list(filter(lambda x: x.fullmatch(date + '.*'), self.counts + self.operations))
+        return list(filter(lambda x: re.fullmatch(date + '.*', x), self.counts + self.operations))
 
     def get_transaction_with_word(self, word):
-        return list(filter(lambda x: x.fullmatch(r'.*' + word + '.*'), self.operations))
+        return list(filter(lambda x: re.fullmatch(r'.*' + word + '.*', x), self.operations))
 
     def get_history_for_count(self, count, start_date, end_date):
         result = []
         # Сначала получаем все операции по счету за все время, затем оставляем только с подходящей датой
-        result += list(filter(lambda x: x.fullmatch(r'\d.\d.\d ' + count + ' \d+'), self.counts))
-        result += list(filter(lambda x: x.fullmatch(r'\d.\d.\d ' + count + ' \d+ \d+ .*'), self.operations))
-        result += list(filter(lambda x: x.fullmatch(r'\d.\d.\d \d+ ' + count + ' \d+ .*'), self.operations))
-        result = list(filter(lambda x:  WorkFunctions.compare_date(x.split()[0], start_date) and
-                             WorkFunctions.compare_date(end_date, x.split()[0]), result))
+        result += list(filter(lambda x: re.fullmatch(r'\d+.\d+.\d+ ' + count + ' \d+', x), self.counts))
+        result += list(filter(lambda x: re.fullmatch(r'\d+.\d+.\d+ ' + count + ' \d+ \d+ .*', x), self.operations))
+        result += list(filter(lambda x: re.fullmatch(r'\d+.\d+.\d+ \d+ ' + count + ' \d+ .*', x), self.operations))
+        result = list(filter(lambda x: WorkFunctions.compare_date(x.split()[0], start_date) and
+                                       WorkFunctions.compare_date(end_date, x.split()[0]), result))
+        return result
+
+    def get_balance_for_all(self):
+        result = {}
+        for count in self.counts:
+            num_count = count.split()[1]
+            sum_count = int(count.split()[2])
+            for operation in self.operations:
+                if operation.split()[1] == num_count:
+                    sum_count -= int(operation.split()[3])
+                if operation.split()[2] == num_count:
+                    sum_count += int(operation.split()[3])
+            result[num_count] = sum_count
+
         return result
