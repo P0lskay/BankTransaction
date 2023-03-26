@@ -19,23 +19,23 @@ class Transaction:
 
     def add_count(self, date, count, summa):
         transaction_file = open(self.transaction_file_name, 'a')
-        new_count = date + " " + count + " " + summa
+        new_count = date + " " + count + " " + summa + "\n"
         transaction_file.write(new_count)
         self.counts.append(new_count)
         transaction_file.close()
 
     def add_operation(self, date, count_out, count_in, summa, comment):
         transaction_file = open(self.transaction_file_name, 'a')
-        new_operation = date + " " + count_out + " " + count_in + " " + summa + " " + comment
+        new_operation = date + " " + count_out + " " + count_in + " " + summa + " " + comment + "\n"
         transaction_file.write(new_operation)
         self.operations.append(new_operation)
         transaction_file.close()
 
     def get_transaction_per_date(self, date):
-        return list(filter(lambda x: re.fullmatch(date + '.*', x), self.counts + self.operations))
+        return list(filter(lambda x: re.fullmatch(date + '.*\n', x), self.counts + self.operations))
 
     def get_transaction_with_word(self, word):
-        return list(filter(lambda x: re.fullmatch(r'.*' + word + '.*', x), self.operations))
+        return list(filter(lambda x: re.fullmatch(r'.*' + word + '.*\n', x), self.operations))
 
     def get_history_for_count(self, count, start_date, end_date):
         result = []

@@ -1,3 +1,4 @@
+from PySide6 import QtCore
 from PySide6.QtWidgets import QApplication, QPushButton, QListWidgetItem, QGridLayout, QWidget, QRadioButton, \
     QButtonGroup, QVBoxLayout, QDateEdit, QLineEdit, QLabel, QHBoxLayout
 
@@ -23,8 +24,21 @@ class AddTransaction(QWidget):
 
             self.count_out_label.setText("Номер счета: ")
 
-    def __init__(self):
-        super().__init__()
+    def _on_save_btn_clicked(self):
+        if self.rb_create_operation.isChecked() and self.count_out.text() != "" and self.count_in.text() != "" \
+                and self.sum.text() != "":
+            new_operation = str(self.date_input.text()) + " " + self.count_out.text() + " " + self.count_in.text() \
+                            + " " + self.sum.text() + " " + self.comment.text()
+            self.parent().input_new_transaction(new_operation, True)
+            self.close()
+        elif self.rb_create_count.isChecked() and self.count_out.text() != "" and self.sum.text() != "":
+            new_count = str(self.date_input.text()) + " " + self.count_out.text() + " " + self.sum.text()
+            self.parent().input_new_transaction(new_count, False)
+            self.close()
+
+
+    def __init__(self, parent=None):
+        super().__init__(parent, QtCore.Qt.Window)
         layout = QGridLayout()
         self.rb_create_count = QRadioButton('Создать счёт')
 
@@ -41,7 +55,7 @@ class AddTransaction(QWidget):
         button_group_layout.addWidget(self.rb_create_operation)
 
         self.save_btn = QPushButton("Сохранить и закрыть")
-
+        self.save_btn.clicked.connect(self._on_save_btn_clicked)
         self.date_input = QDateEdit()
 
         self.count_out_label = QLabel("От: ")
