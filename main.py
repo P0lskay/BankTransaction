@@ -2,6 +2,7 @@ from PySide6.QtWidgets import QApplication, QWidget, QLabel, QGridLayout, QPushB
 from Transaction import Transaction
 from AddTransaction import AddTransaction
 from GetTransactions import GetTransactions
+from GetHistory import GetHistory
 
 
 class Window(QWidget):
@@ -21,6 +22,8 @@ class Window(QWidget):
         get_transaction.clicked.connect(self.on_getButton_clicked)
 
         get_history = QPushButton("История по текущему счету")
+        get_history.clicked.connect(self.on_historyButton_clicked)
+
         get_max_use = QPushButton("Отчет по наибольшим взаимодействиям между счетами")
 
         layout = QGridLayout()
@@ -37,6 +40,10 @@ class Window(QWidget):
 
     def on_getButton_clicked(self):
         self.get_w = GetTransactions(self)
+        self.get_w.show()
+
+    def on_historyButton_clicked(self):
+        self.get_w = GetHistory(self)
         self.get_w.show()
 
     def refresh_transactions_list(self):
@@ -65,6 +72,9 @@ class Window(QWidget):
 
     def get_transactions_per_date(self, search_date):
         return Transaction.get_transaction_per_date(Transaction, str(search_date))
+
+    def get_history_transactions(self, count, start_date, end_date):
+        return Transaction.get_history_for_count(Transaction, str(count), str(start_date), str(end_date))
 
 
 if __name__ == "__main__":

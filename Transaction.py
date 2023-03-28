@@ -40,9 +40,9 @@ class Transaction:
     def get_history_for_count(self, count, start_date, end_date):
         result = []
         # Сначала получаем все операции по счету за все время, затем оставляем только с подходящей датой
-        result += list(filter(lambda x: re.fullmatch(r'\d+.\d+.\d+ ' + count + ' \d+', x), self.counts))
-        result += list(filter(lambda x: re.fullmatch(r'\d+.\d+.\d+ ' + count + ' \d+ \d+ .*', x), self.operations))
-        result += list(filter(lambda x: re.fullmatch(r'\d+.\d+.\d+ \d+ ' + count + ' \d+ .*', x), self.operations))
+        result += list(filter(lambda x: re.fullmatch(r'\d+.\d+.\d+ ' + count + ' \d+\n', x), self.counts))
+        result += list(filter(lambda x: re.fullmatch(r'\d+.\d+.\d+ ' + count + ' \d+ \d+ .*\n', x), self.operations))
+        result += list(filter(lambda x: re.fullmatch(r'\d+.\d+.\d+ \d+ ' + count + ' \d+ .*\n', x), self.operations))
         result = list(filter(lambda x: WorkFunctions.compare_date(x.split()[0], start_date) and
                                        WorkFunctions.compare_date(end_date, x.split()[0]), result))
         return result
