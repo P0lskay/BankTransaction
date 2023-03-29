@@ -76,7 +76,7 @@ class AddTransaction(QWidget):
         sum_layout.addWidget(self.sum_label)
         sum_layout.addWidget(self.sum)
 
-        self.comment_label = QLabel("Примичание: ")
+        self.comment_label = QLabel("Примечание: ")
         self.comment = QLineEdit()
 
         comment_layout = QHBoxLayout()

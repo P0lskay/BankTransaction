@@ -3,7 +3,7 @@ from Transaction import Transaction
 from AddTransaction import AddTransaction
 from GetTransactions import GetTransactions
 from GetHistory import GetHistory
-
+from GetReport import GetReport
 
 class Window(QWidget):
     def __init__(self):
@@ -25,7 +25,7 @@ class Window(QWidget):
         get_history.clicked.connect(self.on_historyButton_clicked)
 
         get_max_use = QPushButton("Отчет по наибольшим взаимодействиям между счетами")
-
+        get_max_use.clicked.connect(self.on_reportButton_clicked)
         layout = QGridLayout()
         layout.addWidget(self.list_counts, 0, 0, 2, 2)
         layout.addWidget(add_transaction, 3, 0)
@@ -44,6 +44,10 @@ class Window(QWidget):
 
     def on_historyButton_clicked(self):
         self.get_w = GetHistory(self)
+        self.get_w.show()
+
+    def on_reportButton_clicked(self):
+        self.get_w = GetReport(self)
         self.get_w.show()
 
     def refresh_transactions_list(self):
@@ -75,6 +79,9 @@ class Window(QWidget):
 
     def get_history_transactions(self, count, start_date, end_date):
         return Transaction.get_history_for_count(Transaction, str(count), str(start_date), str(end_date))
+
+    def get_report_transactions(self):
+        return Transaction.get_top_counts_report(Transaction)
 
 
 if __name__ == "__main__":
