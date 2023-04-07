@@ -64,20 +64,13 @@ class Transaction:
     def get_top_counts_report(self):
         pre_result = {}
         result = {}
-        all_counts = []
-        for count in self.counts:
-            num_count = count.split()[1]
-            all_counts.append(num_count)
+        all_operations = []
+        for operation in self.operations:
+            num_count = operation.split()[1]
+            all_operations.append(sorted([operation.split()[1], operation.split()[2]]))
 
-        for count_1 in all_counts:
-            for count_2 in all_counts:
-                if count_1 == count_2: continue
-                if count_1 + " " + count_2 in pre_result.keys():
-                    pre_result[count_1 + " " + count_2] += 1
-                elif count_2 + " " + count_1 in pre_result.keys():
-                    pre_result[count_2 + " " + count_1] += 1
-                else:
-                    pre_result[count_1 + " " + count_2] = 1
+        for operation in all_operations:
+            pre_result[operation[0] + " " + operation[1]] = all_operations.count(operation)
         sorted_keys = sorted(pre_result, key=pre_result.get)
         for i in sorted_keys[-5:]:
             result[i] = pre_result[i]
